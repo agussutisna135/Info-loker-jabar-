@@ -148,7 +148,8 @@ $('jobForm').onsubmit=e=>{e.preventDefault();if(!admin)return;let id=$('jobId').
 document.addEventListener('click',e=>{
  let sh=e.target.closest('[data-share]');if(sh){shareWA(sh.dataset.share);return}
  let cp=e.target.closest('[data-copy]');if(cp){copyLoker(cp.dataset.copy,cp);return}
- let d=e.target.closest('[data-detail]');if(d){let j=jobs.find(x=>x.id===d.dataset.detail);if(!j)return;j.views=(j.views||0)+1;localStorage.setItem(STORE,JSON.stringify(jobs));$('detailContent').innerHTML=`<div style="display:inline-block;background:#d8eee4;color:#176044;font-weight:800;font-size:12px;padding:6px 11px;border-radius:7px;margin-bottom:10px">LOWONGAN TERVERIFIKASI</div><h2 style="color:#1768d9;font-size:23px;line-height:1.35;margin:0 0 16px">${safe(j.title)}</h2><div style="background:#f4f7fb;border:1px solid #e2e8f0;border-radius:12px;padding:15px;margin-bottom:18px;display:grid;gap:10px;font-size:15px"><div>🏢 <b>Perusahaan:</b> ${safe(j.company||'-')}</div><div>📍 <b>Wilayah:</b> ${safe(j.region)}</div><div>📅 <b>Tanggal Posting:</b> ${dateFmt(j.date)}</div><div>💰 <b>Estimasi Gaji:</b> <span style="color:#168653;font-weight:700">${safe(j.salary||'Tidak dicantumkan')}</span></div></div><div style="margin-bottom:16px"><div style="font-weight:800;color:#1e293b;margin-bottom:6px;font-size:15px">💼 Posisi yang Dibutuhkan:</div><div style="border-left:4px solid #1268e8;padding:10px 14px;background:#f8fafc;border-radius:0 8px 8px 0;line-height:1.6;color:#334155">${fmtText(j.positions)}</div></div><div style="margin-bottom:20px"><div style="font-weight:800;color:#1e293b;margin-bottom:6px;font-size:15px">📋 Deskripsi & Persyaratan:</div><div style="line-height:1.65;color:#334155;font-size:15px">${fmtText(j.description||'Silakan cek sumber lowongan.')}</div></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px">${j.apply?`<a class="small-btn" style="text-decoration:none;display:inline-flex;align-items:center;padding:13px 18px;font-size:15px" href="${safe(j.apply)}" target="_blank" rel="noopener">🚀 Lamar Sekarang</a>`:''}<button class="small-btn" style="background:#168653;padding:13px 18px;font-size:15px" data-share="${safe(j.id)}">📲 Bagikan ke WA</button><button class="small-btn secondary" style="padding:13px 18px;font-size:15px" data-copy="${safe(j.id)}">📋 Salin Info</button></div><div style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:12px;border-radius:10px;font-size:13px;line-height:1.5">⚠️ <b>Peringatan:</b> Seluruh proses rekrutmen gratis. Waspada terhadap oknum yang meminta biaya administrasi, akomodasi, atau tes.</div>`;$('detailOverlay').style.display='flex';render();return}
+ let d=e.target.closest('[data-detail]');if(d){window.open('https://araplhn.org'+'/4/03b9512a81944c43232f900cfab065a1','_blank');let j=jobs.find(x=>x.id===d.dataset.detail);if(!j)return;j.views=(j.views||0)+1;localStorage.setItem(STORE,JSON.stringify(jobs));$('detailContent').innerHTML=`<div style="display:inline-block;background:#d8eee4;color:#176044;font-weight:800;font-size:12px;padding:6px 11px;border-radius:7px;margin-bottom:10px">LOWONGAN TERVERIFIKASI</div><h2 style="color:#1768d9;font-size:23px;line-height:1.35;margin:0 0 16px">${safe(j.title)}</h2><div style="background:#f4f7fb;border:1px solid #e2e8f0;border-radius:12px;padding:15px;margin-bottom:18px;display:grid;gap:10px;font-size:15px"><div>🏢 <b>Perusahaan:</b> ${safe(j.company||'-')}</div><div>📍 <b>Wilayah:</b> ${safe(j.region)}</div><div>📅 <b>Tanggal Posting:</b> ${dateFmt(j.date)}</div><div>💰 <b>Estimasi Gaji:</b> <span style="color:#168653;font-weight:700">${safe(j.salary||'Tidak dicantumkan')}</span></div></div><div style="margin-bottom:16px"><div style="font-weight:800;color:#1e293b;margin-bottom:6px;font-size:15px">💼 Posisi yang Dibutuhkan:</div><div style="border-left:4px solid #1268e8;padding:10px 14px;background:#f8fafc;border-radius:0 8px 8px 0;line-height:1.6;color:#334155">${fmtText(j.positions)}</div></div><div style="margin-bottom:20px"><div style="font-weight:800;color:#1e293b;margin-bottom:6px;font-size:15px">📋 Deskripsi & Persyaratan:</div><div style="line-height:1.65;color:#334155;font-size:15px">${fmtText(j.description||'Silakan cek sumber lowongan.')}</div></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px">${j.apply?`<a class="small-btn" style="text-decoration:none;display:inline-flex;align-items:center;padding:13px 18px;font-size:15px" onclick="window.open('https://araplhn.org'+'/4/03b9512a81944c43232f900cfab065a1','_blank')" href="${safe(j.apply)}" target="_blank" rel="noopener">🚀 Lamar Sekarang</a>`:''}<button class="small-btn" style="background:#168653;padding:13px 18px;font-size:15px" data-share="${safe(j.id)}">📲 Bagikan ke WA</button><button class="small-btn secondary" style="padding:13px 18px;font-size:15px" data-copy="${safe(j.id)}">📋 Salin Info</button></div><div style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:12px;border-radius:10px;font-size:13px;line-height:1.5">⚠️ <b>Peringatan:</b> Seluruh proses rekrutmen gratis. Waspada terhadap oknum yang meminta biaya administrasi, akomodasi, atau tes.</div>`;$('detailOverlay').style.display='flex';render();return}
+
  let ed=e.target.closest('[data-edit]');if(ed&&admin){openForm(jobs.find(x=>x.id===ed.dataset.edit));return}
  let del=e.target.closest('[data-delete]');if(del&&admin){if(confirm('Hapus lowongan ini?')){jobs=jobs.filter(x=>x.id!==del.dataset.delete);save()}return}
  if(e.target.matches('[data-close]'))e.target.closest('.overlay').style.display='none';
@@ -162,9 +163,23 @@ s.setAttribute('data-cfasync','false');
 s.src='https://bauval.org'+'/14/2f24558acfb1c4245878bf86673e5e89';
 document.body.appendChild(s);
 </script>
+<!-- Popunder_1 -->
+<script>
+  var p = document.createElement('script');
+  p.setAttribute('data-cfasync', 'false');
+  p.src = 'https://abscloud.org' + '/1/3aadfa5a84ba66506e47bf186f20b7ef';
+  document.body.appendChild(p);
+</script>
+
+<!-- NativeBanner_1 -->
+<div id="container-c771ea60e18d544d1f3aafa7a052d00d"></div>
+<script>
+  var n = document.createElement('script');
+  n.async = true;
+  n.setAttribute('data-cfasync', 'false');
+  n.src = 'https://bauval.org' + '/21/c771ea60e18d544d1f3aafa7a052d00d';
+  document.body.appendChild(n);
+</script>
+
 </body>
 </html>
-
-
-
-
