@@ -109,7 +109,7 @@ footer a{color:#1768d9;text-decoration:none;margin:0 8px}
   <div class="modal-actions"><button class="small-btn" type="submit">Simpan Lowongan</button><button class="small-btn secondary" type="button" data-close>Batal</button></div>
  </form>
 </div></div>
-<div class="overlay" id="detailOverlay"><div class="modal">
+<div class="overlay" id="detailOverlay"><div class="modal" style="padding:26px">
  <button class="close" data-close>✕</button><div id="detailContent"></div>
 </div></div>
 <script>
@@ -122,13 +122,18 @@ let region='Semua Wilayah',admin=false,logoTaps=0,logoTimer;
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem(STORE,JSON.stringify(jobs));render()}
 function safe(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmtText(s=''){return safe(s).replace(/\n/g,'<br>')}
 function dateFmt(d){if(!d)return 'Tanggal belum diisi';let x=new Date(d+'T00:00:00');return isNaN(x)?d:x.toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric'})}
+function shareMsg(j){return `*${j.title}*\n🏢 Perusahaan: ${j.company||'-'}\n📍 Wilayah: ${j.region}\n💼 Posisi: ${j.positions}\n💰 Gaji: ${j.salary||'Tidak dicantumkan'}\n\nCek info lengkap & loker Jabar lainnya di:\n${location.origin+location.pathname}`}
+function shareWA(id){let j=jobs.find(x=>x.id===id);if(!j)return;window.open('https://'+'://whatsapp.com(shareMsg(j)),'_blank','noopener')}
+
+function copyLoker(id,btn){let j=jobs.find(x=>x.id===id);if(!j)return;navigator.clipboard?.writeText(shareMsg(j)).then(()=>{let t=btn.textContent;btn.textContent='✓ Tersalin!';setTimeout(()=>btn.textContent=t,2000)})}
 function render(){
  const q=$('searchInput').value.toLowerCase().trim();
  const list=jobs.filter(j=>(region==='Semua Wilayah'||j.region===region)&&[j.title,j.company,j.region,j.positions].join(' ').toLowerCase().includes(q)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
  $('adminBar').style.display=admin?'block':'none';$('adminCount').textContent=jobs.length;
  if(!list.length){$('jobs').innerHTML='<div class="empty">Tidak ada lowongan yang cocok dengan pencarian ini.</div>';return}
- $('jobs').innerHTML=list.map(j=>`<article class="job"><div class="job-top"><div style="flex:1;min-width:0"><h3 class="job-title" data-detail="${safe(j.id)}">${safe(j.title)}</h3></div><span class="tag">TERBARU</span></div><div class="meta"><span>📍 ${safe(j.region)}</span><span>◷ ${dateFmt(j.date)}</span><span>◉ ${Number(j.views||0).toLocaleString('id-ID')} dilihat</span></div><div class="summary">Posisi: ${safe(j.positions)}</div><div class="job-actions"><button class="small-btn" data-detail="${safe(j.id)}">Lihat Detail</button>${admin?`<button class="small-btn secondary" data-edit="${safe(j.id)}">Edit</button><button class="small-btn danger" data-delete="${safe(j.id)}">Hapus</button>`:''}</div></article>`).join('');
+ $('jobs').innerHTML=list.map(j=>`<article class="job"><div class="job-top"><div style="flex:1;min-width:0"><h3 class="job-title" data-detail="${safe(j.id)}">${safe(j.title)}</h3></div><span class="tag">TERBARU</span></div><div class="meta"><span>🏢 ${safe(j.company||'Perusahaan')}</span><span>📍 ${safe(j.region)}</span><span>◷ ${dateFmt(j.date)}</span><span>◉ ${Number(j.views||0).toLocaleString('id-ID')} dilihat</span></div><div class="summary">Posisi: ${safe(j.positions)}</div><div class="job-actions"><button class="small-btn" data-detail="${safe(j.id)}">📄 Lihat Detail</button><button class="small-btn" style="background:#168653" data-share="${safe(j.id)}">📲 Bagikan WA</button>${admin?`<button class="small-btn secondary" data-edit="${safe(j.id)}">Edit</button><button class="small-btn danger" data-delete="${safe(j.id)}">Hapus</button>`:''}</div></article>`).join('');
 }
 $('filters').addEventListener('click',e=>{let b=e.target.closest('button[data-region]');if(!b)return;region=b.dataset.region;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));render()});
 $('searchToggle').onclick=()=>{$('searchPanel').style.display=$('searchPanel').style.display==='none'?'block':'none';if($('searchPanel').style.display==='block')$('searchInput').focus()};
@@ -140,7 +145,9 @@ function openForm(j){$('jobForm').reset();$('jobId').value=j?.id||'';$('formTitl
 $('addJob').onclick=()=>openForm(null);
 $('jobForm').onsubmit=e=>{e.preventDefault();if(!admin)return;let id=$('jobId').value;let old=jobs.find(x=>x.id===id);let obj={id:id||'job'+Date.now(),title:$('title').value.trim(),company:$('company').value.trim(),region:$('region').value,date:$('date').value,positions:$('positions').value.trim(),salary:$('salary').value.trim(),description:$('description').value.trim(),apply:$('apply').value.trim(),views:old?.views||0};if(id)jobs=jobs.map(x=>x.id===id?obj:x);else jobs.unshift(obj);$('editOverlay').style.display='none';save()};
 document.addEventListener('click',e=>{
- let d=e.target.closest('[data-detail]');if(d){let j=jobs.find(x=>x.id===d.dataset.detail);if(!j)return;j.views=(j.views||0)+1;localStorage.setItem(STORE,JSON.stringify(jobs));$('detailContent').innerHTML=`<h2>${safe(j.title)}</h2><p><b>Perusahaan:</b> ${safe(j.company||'-')}</p><p><b>Lokasi:</b> ${safe(j.region)}</p><p><b>Tanggal:</b> ${dateFmt(j.date)}</p><p><b>Posisi:</b><br>${safe(j.positions)}</p><p><b>Gaji:</b> ${safe(j.salary||'Tidak dicantumkan')}</p><p><b>Deskripsi & persyaratan:</b><br>${safe(j.description||'Silakan cek sumber lowongan.')}</p>${j.apply?`<p><a class="small-btn" href="${safe(j.apply)}" target="_blank" rel="noopener">Lamar / Buka Sumber Lowongan</a></p>`:''}<p class="notice">Waspada penipuan. Jangan membayar biaya rekrutmen.</p>`;$('detailOverlay').style.display='flex';render();return}
+ let sh=e.target.closest('[data-share]');if(sh){shareWA(sh.dataset.share);return}
+ let cp=e.target.closest('[data-copy]');if(cp){copyLoker(cp.dataset.copy,cp);return}
+ let d=e.target.closest('[data-detail]');if(d){let j=jobs.find(x=>x.id===d.dataset.detail);if(!j)return;j.views=(j.views||0)+1;localStorage.setItem(STORE,JSON.stringify(jobs));$('detailContent').innerHTML=`<div style="display:inline-block;background:#d8eee4;color:#176044;font-weight:800;font-size:12px;padding:6px 11px;border-radius:7px;margin-bottom:10px">LOWONGAN TERVERIFIKASI</div><h2 style="color:#1768d9;font-size:23px;line-height:1.35;margin:0 0 16px">${safe(j.title)}</h2><div style="background:#f4f7fb;border:1px solid #e2e8f0;border-radius:12px;padding:15px;margin-bottom:18px;display:grid;gap:10px;font-size:15px"><div>🏢 <b>Perusahaan:</b> ${safe(j.company||'-')}</div><div>📍 <b>Wilayah:</b> ${safe(j.region)}</div><div>📅 <b>Tanggal Posting:</b> ${dateFmt(j.date)}</div><div>💰 <b>Estimasi Gaji:</b> <span style="color:#168653;font-weight:700">${safe(j.salary||'Tidak dicantumkan')}</span></div></div><div style="margin-bottom:16px"><div style="font-weight:800;color:#1e293b;margin-bottom:6px;font-size:15px">💼 Posisi yang Dibutuhkan:</div><div style="border-left:4px solid #1268e8;padding:10px 14px;background:#f8fafc;border-radius:0 8px 8px 0;line-height:1.6;color:#334155">${fmtText(j.positions)}</div></div><div style="margin-bottom:20px"><div style="font-weight:800;color:#1e293b;margin-bottom:6px;font-size:15px">📋 Deskripsi & Persyaratan:</div><div style="line-height:1.65;color:#334155;font-size:15px">${fmtText(j.description||'Silakan cek sumber lowongan.')}</div></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px">${j.apply?`<a class="small-btn" style="text-decoration:none;display:inline-flex;align-items:center;padding:13px 18px;font-size:15px" href="${safe(j.apply)}" target="_blank" rel="noopener">🚀 Lamar Sekarang</a>`:''}<button class="small-btn" style="background:#168653;padding:13px 18px;font-size:15px" data-share="${safe(j.id)}">📲 Bagikan ke WA</button><button class="small-btn secondary" style="padding:13px 18px;font-size:15px" data-copy="${safe(j.id)}">📋 Salin Info</button></div><div style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:12px;border-radius:10px;font-size:13px;line-height:1.5">⚠️ <b>Peringatan:</b> Seluruh proses rekrutmen gratis. Waspada terhadap oknum yang meminta biaya administrasi, akomodasi, atau tes.</div>`;$('detailOverlay').style.display='flex';render();return}
  let ed=e.target.closest('[data-edit]');if(ed&&admin){openForm(jobs.find(x=>x.id===ed.dataset.edit));return}
  let del=e.target.closest('[data-delete]');if(del&&admin){if(confirm('Hapus lowongan ini?')){jobs=jobs.filter(x=>x.id!==del.dataset.delete);save()}return}
  if(e.target.matches('[data-close]'))e.target.closest('.overlay').style.display='none';
@@ -148,6 +155,10 @@ document.addEventListener('click',e=>{
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.style.display='none'}));
 render();
 </script>
- <script data-cfasync="false" src="https://bauval.org/14/2f24558acfb1c4245878bf86673e5e89"></script>
+<script data-cfasync="false" src="https://bauval.org"></script>
 </body>
-</html> 
+</html>
+
+
+
+
