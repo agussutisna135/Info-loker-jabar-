@@ -3,7 +3,6 @@ export const config = {
 };
 
 export default async function middleware(request) {
-  // Cegah loop jika request berasal dari middleware itu sendiri
   if (request.headers.get('x-middleware-bypass') === '1') {
     return;
   }
@@ -11,8 +10,8 @@ export default async function middleware(request) {
   const url = new URL(request.url);
   const pt = url.searchParams.get('pt');
   const posisi = url.searchParams.get('posisi');
+  const wilayah = url.searchParams.get('wilayah');
 
-  // Ambil file index.html asli dengan penanda bypass
   const indexUrl = new URL('/index.html', request.url);
   const response = await fetch(indexUrl, {
     headers: { 'x-middleware-bypass': '1' },
@@ -21,14 +20,14 @@ export default async function middleware(request) {
   let html = await response.text();
 
   const judul = pt 
-    ? `Lowongan Kerja ${pt}${posisi ? ` - ${posisi}` : ''}` 
+    ? `Lowongan Kerja ${pt}${wilayah ? ` ${wilayah}` : ''}` 
     : 'Info Loker Jabar - Terbaru & Terpercaya';
     
   const deskripsi = pt
-    ? `Info Loker Jabar - Lowongan kerja terbaru di ${pt} posisi ${posisi || 'tersedia'}. Gratis tanpa pungutan biaya.`
+    ? `Info Loker Jabar - Lowongan kerja terbaru di ${pt} posisi ${posisi || 'tersedia'} (${wilayah || 'Jawa Barat'}). Gratis tanpa pungutan biaya.`
     : 'Info lowongan kerja terbaru di seluruh Jawa Barat. Gratis tanpa pungutan biaya.';
 
-  const gambarOg = `${url.origin}/api/og?pt=${encodeURIComponent(pt || 'Info Loker Jabar')}&posisi=${encodeURIComponent(posisi || 'Terbaru & Terpercaya')}`;
+  const gambarOg = `${url.origin}/api/og?pt=${encodeURIComponent(pt || 'Info Loker Jabar')}&posisi=${encodeURIComponent(posisi || 'Terbaru & Terpercaya')}&wilayah=${encodeURIComponent(wilayah || 'Jawa Barat')}`;
 
   const metaTags = `
     <meta property="og:type" content="website">
