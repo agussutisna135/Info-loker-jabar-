@@ -127,7 +127,12 @@ function save(){localStorage.setItem(STORE,JSON.stringify(jobs));render()}
 function safe(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function fmtText(s=''){return safe(s).replace(/\n/g,'<br>')}
 function dateFmt(d){if(!d)return 'Tanggal belum diisi';let x=new Date(d+'T00:00:00');return isNaN(x)?d:x.toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric'})}
-function shareMsg(j){return `*${j.title}*\n🏢 Perusahaan: ${j.company||'-'}\n📍 Wilayah: ${j.region}\n💼 Posisi: ${j.positions}\n💰 Gaji: ${j.salary||'Tidak dicantumkan'}\n\nCek info lengkap & loker Jabar lainnya di:\n${location.origin+location.pathname}`}
+
+function shareMsg(j){var h='https://';var d='info-loker-jabar.vercel.app/';var u=h+d+'?pt='+encodeURIComponent(j.company||j.title)+'&posisi='+encodeURIComponent(j.positions||'Tersedia');return '*'+j.title+'*\n🏢 Perusahaan: '+(j.company||'-')+'\n📍 Wilayah: '+j.region+'\n💼 Posisi: '+j.positions+'\n💰 Gaji: '+(j.salary||'Tidak dicantumkan')+'\n\nCek info lengkap & loker Jabar lainnya di:\n'+u}
+
+
+
+
 function shareWA(id){let j=jobs.find(x=>x.id===id);if(!j)return;if(navigator.share)navigator.share({title:j.title,text:shareMsg(j)});else copyLoker(id,event.target)}
 
 
