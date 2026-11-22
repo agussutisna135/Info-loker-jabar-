@@ -128,7 +128,9 @@ function safe(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function fmtText(s=''){return safe(s).replace(/\n/g,'<br>')}
 function dateFmt(d){if(!d)return 'Tanggal belum diisi';let x=new Date(d+'T00:00:00');return isNaN(x)?d:x.toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric'})}
 
-function shareMsg(j){var h='https://';var d='info-loker-jabar.vercel.app/';var p=(j.positions||'Tersedia').split('\n').join(', ');if(p.length>55)p=p.substring(0,52)+'...';var u=h+d+'?pt='+encodeURIComponent(j.company||j.title)+'&posisi='+encodeURIComponent(p)+'&wilayah='+encodeURIComponent(j.region||'Jawa Barat');var listPos=(j.positions||'').split('\n').map(function(x){return '• '+x}).join('\n');return '*'+j.title+'*\n\nDibutuhkan Untuk Posisi :\n\n'+listPos+'\n\nInfo selengkapnya Klik tautan dibawah ini.\n\n'+u+'\n\n-------------------'}
+function shareMsg(j){var h='https://';var d='info-loker-jabar.vercel.app/';var w1='whatsapp.com/channel/';var 
+w2='0029VbEhLf8GU3BIgApP8D3d';var wa=h+w1+w2;var tg=h+'t.me/lokersukabumijabar';var u=h+d+'?id='+encodeURIComponent(j.id);var listPos=(j.positions||'').split('\n').map(function(x){return '• '+x}).join('\n');return '*'+j.title+'*\n\nDibutuhkan Untuk Posisi :\n\n'+listPos+'\n\nInfo selengkapnya Klik tautan dibawah ini.\n\n'+u+'\n\n-------------------\n\nChannel WhatsApp:\n'+wa+'\n\nGrup Telegram:\n'+tg}
+
 
 
 
