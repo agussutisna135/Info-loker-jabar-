@@ -1,16 +1,23 @@
-import { next } from '@vercel/edge';
-
 export const config = {
   matcher: '/',
 };
 
 export default async function middleware(request) {
+  // Cegah loop jika request berasal dari middleware itu sendiri
+  if (request.headers.get('x-middleware-bypass') === '1') {
+    return;
+  }
+
   const url = new URL(request.url);
   const pt = url.searchParams.get('pt');
   const posisi = url.searchParams.get('posisi');
 
-  // Lanjutkan ke halaman index.html asli
-  const response = await next();
+  // Ambil file index.html asli dengan penanda bypass
+  const indexUrl = new URL('/index.html', request.url);
+  const response = await fetch(indexUrl, {
+    headers: { 'x-middleware-bypass': '1' },
+  });
+  
   let html = await response.text();
 
   const judul = pt 
