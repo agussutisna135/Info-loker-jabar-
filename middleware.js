@@ -1,3 +1,5 @@
+import { next } from '@vercel/edge';
+
 export const config = {
   matcher: '/',
 };
@@ -7,8 +9,8 @@ export default async function middleware(request) {
   const pt = url.searchParams.get('pt');
   const posisi = url.searchParams.get('posisi');
 
-  // Ambil file index.html asli
-  const response = await fetch(new URL('/index.html', request.url));
+  // Lanjutkan ke halaman index.html asli
+  const response = await next();
   let html = await response.text();
 
   const judul = pt 
@@ -32,7 +34,6 @@ export default async function middleware(request) {
     <meta name="twitter:card" content="summary_large_image">
   `;
 
-  // Suntikkan meta tag tepat sebelum tag </head>
   html = html.replace('</head>', `${metaTags}</head>`);
 
   return new Response(html, {
