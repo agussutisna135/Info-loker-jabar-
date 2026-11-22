@@ -7,11 +7,12 @@ export const config = {
 export default function handler(req) {
   const { searchParams } = new URL(req.url);
   const pt = searchParams.get('pt') || 'Info Loker Jabar';
-  const posisi = searchParams.get('posisi') || 'Lowongan Kerja Terbaru Jawa Barat';
+  const posisi = searchParams.get('posisi') || 'Lowongan Kerja Terbaru';
 
   return new ImageResponse(
     {
       type: 'div',
+      key: 'root',
       props: {
         style: {
           height: '100%',
@@ -28,51 +29,61 @@ export default function handler(req) {
         children: [
           {
             type: 'div',
-            style: {
-              backgroundColor: '#1264df',
-              color: 'white',
-              padding: '10px 28px',
-              borderRadius: '50px',
-              fontSize: 28,
-              fontWeight: 'bold',
-              marginBottom: 30,
+            key: 'badge',
+            props: {
+              style: {
+                backgroundColor: '#1264df',
+                color: 'white',
+                padding: '10px 28px',
+                borderRadius: '50px',
+                fontSize: 28,
+                fontWeight: 'bold',
+                marginBottom: 30,
+              },
+              children: 'INFO LOKER JABAR • LOWONGAN KERJA',
             },
-            children: "WE'RE HIRING • INFO LOKER JABAR",
           },
           {
             type: 'div',
-            style: {
-              fontSize: 58,
-              fontWeight: 900,
-              color: '#172033',
-              textAlign: 'center',
-              marginBottom: 20,
-              lineHeight: 1.2,
+            key: 'pt',
+            props: {
+              style: {
+                fontSize: 56,
+                fontWeight: 'bold',
+                color: '#172033',
+                textAlign: 'center',
+                marginBottom: 20,
+              },
+              children: pt,
             },
-            children: pt,
           },
           {
             type: 'div',
-            style: {
-              fontSize: 38,
-              fontWeight: 600,
-              color: '#168653',
-              textAlign: 'center',
-              marginBottom: 40,
+            key: 'posisi',
+            props: {
+              style: {
+                fontSize: 38,
+                fontWeight: 'bold',
+                color: '#168653',
+                textAlign: 'center',
+                marginBottom: 40,
+              },
+              children: `Posisi: ${posisi}`,
             },
-            children: `Posisi: ${posisi}`,
           },
           {
             type: 'div',
-            style: {
-              fontSize: 24,
-              color: '#6b7280',
-              backgroundColor: 'white',
-              padding: '12px 30px',
-              borderRadius: '12px',
-              border: '2px solid #e1e6ed',
+            key: 'footer',
+            props: {
+              style: {
+                fontSize: 24,
+                color: '#6b7280',
+                backgroundColor: 'white',
+                padding: '12px 30px',
+                borderRadius: '12px',
+              },
+              children: 'Gratis Tanpa Pungutan Biaya • Cek Info Lengkap',
             },
-            children: 'Gratis Tanpa Pungutan Biaya • Cek Info Lengkap',
           },
         ],
       },
